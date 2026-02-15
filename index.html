@@ -1,0 +1,680 @@
+<!doctype html>
+<html lang="en" class="h-full">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Valentine's Adventure</title>
+    <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+    <script src="/_sdk/element_sdk.js"></script>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600;700&amp;family=Dancing+Script:wght@700&amp;display=swap"
+        rel="stylesheet">
+    <style>
+        * {
+            font-family: 'Quicksand', sans-serif;
+        }
+
+        .script-font {
+            font-family: 'Dancing Script', cursive;
+        }
+
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translateY(0px);
+            }
+
+            50% {
+                transform: translateY(-15px);
+            }
+        }
+
+        @keyframes heartBeat {
+
+            0%,
+            100% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.1);
+            }
+        }
+
+        @keyframes sparkle {
+
+            0%,
+            100% {
+                opacity: 0;
+                transform: scale(0);
+            }
+
+            50% {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        @keyframes confetti-fall {
+            0% {
+                transform: translateY(-100%) rotate(0deg);
+                opacity: 1;
+            }
+
+            100% {
+                transform: translateY(100%) rotate(720deg);
+                opacity: 0;
+            }
+        }
+
+        @keyframes pulse-scale {
+
+            0%,
+            100% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.15);
+            }
+        }
+
+        @keyframes wiggle {
+
+            0%,
+            100% {
+                transform: rotate(0deg);
+            }
+
+            25% {
+                transform: rotate(5deg);
+            }
+
+            75% {
+                transform: rotate(-5deg);
+            }
+        }
+
+        @keyframes open-gift {
+            0% {
+                transform: scaleY(1) rotateX(0deg);
+            }
+
+            100% {
+                transform: scaleY(0.05) rotateX(90deg);
+                opacity: 0;
+            }
+        }
+
+        @keyframes slide-up {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .float-animation {
+            animation: float 3s ease-in-out infinite;
+        }
+
+        .heartbeat {
+            animation: heartBeat 1.5s ease-in-out infinite;
+        }
+
+        .wiggle {
+            animation: wiggle 0.5s ease-in-out infinite;
+        }
+
+        .sparkle {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background: #FFD700;
+            border-radius: 50%;
+            animation: sparkle 2s ease-in-out infinite;
+        }
+
+        .no-btn {
+            transition: all 0.1s ease;
+            position: relative;
+        }
+
+        .confetti {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            animation: confetti-fall 3s linear forwards;
+        }
+
+        .yes-btn-growing {
+            animation: pulse-scale 0.4s ease-in-out;
+        }
+
+        .screen {
+            display: none;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+
+        .screen.active {
+            display: flex;
+            opacity: 1;
+        }
+
+        .countdown-num {
+            animation: slide-up 0.5s ease-out;
+        }
+
+        .game-card {
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+
+        .game-card:hover:not(.matched) {
+            transform: scale(1.08);
+        }
+
+        .game-card.matched {
+            pointer-events: none;
+        }
+
+        .gift-box {
+            cursor: pointer;
+            animation: wiggle 1s ease-in-out infinite;
+            user-select: none;
+        }
+
+        .gift-box:hover {
+            animation: none;
+            transform: scale(1.1);
+        }
+
+        .gift-open {
+            animation: open-gift 0.6s ease-in-out forwards;
+        }
+
+        .letter-content {
+            animation: slide-up 0.6s ease-out;
+        }
+    </style>
+    <style>
+        body {
+            box-sizing: border-box;
+        }
+    </style>
+    <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
+</head>
+
+<body class="h-full">
+    <div id="app-wrapper" class="w-full h-full overflow-auto"
+        style="background: linear-gradient(135deg, #ffe6f0 0%, #fff0f5 50%, #ffe6e6 100%);">
+        <!-- PAGE 1: Valentine Question -->
+        <div id="page-1" class="screen active min-h-full flex flex-col items-center justify-center p-6 relative">
+            <!-- Floating Hearts Background -->
+            <div class="absolute inset-0 overflow-hidden pointer-events-none">
+                <div class="absolute top-10 left-10 text-4xl opacity-30 float-animation" style="animation-delay: 0s;">
+                    💕
+                </div>
+                <div class="absolute top-20 right-20 text-3xl opacity-30 float-animation"
+                    style="animation-delay: 0.5s;">
+                    💗
+                </div>
+                <div class="absolute bottom-32 left-20 text-2xl opacity-30 float-animation"
+                    style="animation-delay: 1s;">
+                    💖
+                </div>
+                <div class="absolute bottom-20 right-10 text-4xl opacity-30 float-animation"
+                    style="animation-delay: 1.5s;">
+                    💝
+                </div>
+            </div><!-- Cat with Flowers SVG -->
+            <div class="float-animation mb-8 relative z-10">
+                <svg width="200" height="220" viewbox="0 0 200 220" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <ellipse cx="100" cy="170" rx="50" ry="40" fill="#f5d5c8" />
+                    <circle cx="100" cy="100" r="55" fill="#f5d5c8" />
+                    <path d="M55 60 L45 20 L75 50 Z" fill="#f5d5c8" />
+                    <path d="M145 60 L155 20 L125 50 Z" fill="#f5d5c8" />
+                    <path d="M58 55 L52 28 L72 48 Z" fill="#ffb6c1" />
+                    <path d="M142 55 L148 28 L128 48 Z" fill="#ffb6c1" />
+                    <ellipse cx="75" cy="95" rx="12" ry="15" fill="#3d3d3d" />
+                    <ellipse cx="125" cy="95" rx="12" ry="15" fill="#3d3d3d" />
+                    <circle cx="78" cy="90" r="5" fill="white" />
+                    <circle cx="128" cy="90" r="5" fill="white" />
+                    <path d="M100 110 L95 118 L105 118 Z" fill="#ffb6c1" />
+                    <path d="M100 118 Q90 128 85 125" stroke="#3d3d3d" stroke-width="2" fill="none"
+                        stroke-linecap="round" />
+                    <path d="M100 118 Q110 128 115 125" stroke="#3d3d3d" stroke-width="2" fill="none"
+                        stroke-linecap="round" />
+                    <line x1="45" y1="105" x2="70" y2="110" stroke="#3d3d3d" stroke-width="1.5" />
+                    <line x1="45" y1="115" x2="70" y2="115" stroke="#3d3d3d" stroke-width="1.5" />
+                    <line x1="45" y1="125" x2="70" y2="120" stroke="#3d3d3d" stroke-width="1.5" />
+                    <line x1="155" y1="105" x2="130" y2="110" stroke="#3d3d3d" stroke-width="1.5" />
+                    <line x1="155" y1="115" x2="130" y2="115" stroke="#3d3d3d" stroke-width="1.5" />
+                    <line x1="155" y1="125" x2="130" y2="120" stroke="#3d3d3d" stroke-width="1.5" />
+                    <ellipse cx="65" cy="115" rx="10" ry="6" fill="#ffb6c1" opacity="0.5" />
+                    <ellipse cx="135" cy="115" rx="10" ry="6" fill="#ffb6c1" opacity="0.5" />
+                    <ellipse cx="70" cy="175" rx="15" ry="12" fill="#f5d5c8" />
+                    <ellipse cx="130" cy="175" rx="15" ry="12" fill="#f5d5c8" />
+                    <rect x="90" y="145" width="20" height="50" rx="3" fill="#90EE90" />
+                    <circle cx="85" cy="135" r="15" fill="#ff6b9d" />
+                    <circle cx="100" cy="125" r="18" fill="#ff4081" />
+                    <circle cx="115" cy="135" r="15" fill="#ff6b9d" />
+                    <circle cx="92" cy="145" r="12" fill="#ff8fab" />
+                    <circle cx="108" cy="145" r="12" fill="#ff8fab" />
+                    <circle cx="85" cy="135" r="5" fill="#ffeb3b" />
+                    <circle cx="100" cy="125" r="6" fill="#ffeb3b" />
+                    <circle cx="115" cy="135" r="5" fill="#ffeb3b" />
+                    <circle cx="92" cy="145" r="4" fill="#ffeb3b" />
+                    <circle cx="108" cy="145" r="4" fill="#ffeb3b" />
+                    <ellipse cx="78" cy="155" rx="8" ry="4" fill="#4CAF50" transform="rotate(-30 78 155)" />
+                    <ellipse cx="122" cy="155" rx="8" ry="4" fill="#4CAF50" transform="rotate(30 122 155)" />
+                </svg>
+            </div><!-- Question Text -->
+            <h1 id="question-text"
+                class="script-font text-5xl md:text-6xl text-pink-600 text-center mb-8 heartbeat relative z-10">Will you
+                be my Valentine?</h1><!-- Buttons Container -->
+            <div
+                class="flex flex-col sm:flex-row gap-6 items-center relative w-full max-w-md justify-center min-h-32 z-10">
+                <!-- Yes Button --> <button id="yes-btn"
+                    class="px-12 py-5 text-2xl font-bold text-white rounded-full shadow-lg hover:shadow-xl transition-all duration-300"
+                    style="background: linear-gradient(135deg, #4CAF50, #66BB6A);"> <span id="yes-text">Yes! 💕</span>
+                </button> <!-- No Button --> <button id="no-btn"
+                    class="no-btn px-10 py-4 text-xl font-bold text-white rounded-full shadow-lg"
+                    style="background: linear-gradient(135deg, #ef5350, #e53935);"> No </button>
+            </div>
+            <p id="hint-text" class="mt-8 text-pink-400 text-sm opacity-0 transition-opacity duration-500 z-10">The "No"
+                button seems shy... ?</p>
+        </div><!-- PAGE 2: Game Invitation -->
+        <div id="page-2" class="screen min-h-full flex flex-col items-center justify-center p-6">
+            <div class="text-center max-w-2xl z-10">
+                <div class="text-8xl mb-6 heartbeat">
+                    🎮
+                </div>
+                <h1 id="game-title" class="script-font text-5xl md:text-6xl text-pink-600 mb-6">Let's Play a Game!</h1>
+                <p id="game-desc" class="text-2xl text-pink-500 mb-8">If you win, I'll give you a present! 🎁</p><button
+                    id="ready-btn"
+                    class="px-12 py-4 text-2xl font-bold text-white rounded-full shadow-lg hover:shadow-xl transition-all"
+                    style="background: linear-gradient(135deg, #ff4081, #e91e63);"> Are you ready? ? </button>
+            </div>
+        </div><!-- PAGE 3: Countdown -->
+        <div id="page-3" class="screen min-h-full flex flex-col items-center justify-center p-6">
+            <div class="text-center z-10">
+                <h1 class="script-font text-4xl md:text-5xl text-pink-600 mb-16">Get ready...</h1>
+                <div id="countdown" class="text-9xl font-bold text-pink-600">
+                    3
+                </div>
+            </div>
+        </div><!-- PAGE 4: Memory Game -->
+        <div id="page-4" class="screen min-h-full flex flex-col items-center justify-center p-6 z-10">
+            <h1 class="script-font text-4xl text-pink-600 mb-8">Match the Emojis! 🎯</h1>
+            <div id="game-board" class="grid grid-cols-4 gap-4 mb-8 max-w-md"><!-- Game cards will be generated here -->
+            </div>
+            <p id="game-info" class="text-lg text-pink-500">Matched: <span id="matched-count">0</span>/8</p>
+        </div><!-- PAGE 5: Good Girl Message -->
+        <div id="page-5" class="screen min-h-full flex flex-col items-center justify-center p-6">
+            <div class="text-center mb-10 z-10">
+                <h1 class="script-font text-5xl md:text-6xl text-pink-600 mb-2">Good girl! ?</h1>
+                <p class="text-2xl text-pink-500">(That's what I thought ?)</p>
+            </div>
+            <p class="text-xl text-pink-500 mb-10 z-10">Well done for winning! Seems like I have to give you a present
+                now... 🎁</p><!-- Gift Box -->
+            <div id="gift-box" class="gift-box mb-8 z-10">
+                <svg width="150" height="160" viewbox="0 0 150 160" fill="none"
+                    xmlns="http://www.w3.org/2000/svg"><!-- Box bottom -->
+                    <rect x="30" y="80" width="90" height="70" fill="#ff6b9d" stroke="#e91e63" stroke-width="2" />
+                    <!-- Box top -->
+                    <rect id="box-top" x="30" y="30" width="90" height="50" fill="#ff4081" stroke="#c2185b"
+                        stroke-width="2" /> <!-- Ribbon -->
+                    <rect x="68" y="20" width="14" height="100" fill="#ffd700" stroke="#ffb300" stroke-width="1" />
+                    <!-- Bow -->
+                    <ellipse cx="60" cy="25" rx="12" ry="10" fill="#ffd700" />
+                    <ellipse cx="90" cy="25" rx="12" ry="10" fill="#ffd700" />
+                    <circle cx="75" cy="27" r="8" fill="#ffeb3b" /> <!-- Sparkles --> <text x="40" y="60"
+                        font-size="24">
+                        ✨
+                    </text> <text x="100" y="100" font-size="24">
+                        ✨
+                    </text>
+                </svg>
+            </div>
+            <p class="text-pink-400 text-sm z-10">Click the gift to open it! 🎁</p>
+        </div><!-- PAGE 6: Love Letter -->
+        <div id="page-6" class="screen min-h-full flex flex-col items-center justify-center p-6">
+            <div
+                class="letter-content max-w-2xl bg-gradient-to-b from-pink-50 to-red-50 rounded-lg p-8 shadow-2xl border-4 border-pink-300 z-10">
+                <div class="text-center">
+                    <h1 class="script-font text-5xl text-pink-600 mb-8">My Love 💌</h1><!-- Cat with Heart SVG -->
+                    <svg width="180" height="180" viewbox="0 0 180 180" fill="none" xmlns="http://www.w3.org/2000/svg"
+                        class="mx-auto mb-8"><!-- Cat Body -->
+                        <ellipse cx="90" cy="130" rx="40" ry="35" fill="#f5d5c8" /> <!-- Cat Head -->
+                        <circle cx="90" cy="70" r="45" fill="#f5d5c8" /> <!-- Cat Ears -->
+                        <path d="M55 40 L45 5 L65 35 Z" fill="#f5d5c8" />
+                        <path d="M125 40 L135 5 L115 35 Z" fill="#f5d5c8" />
+                        <path d="M57 38 L50 10 L63 33 Z" fill="#ffb6c1" />
+                        <path d="M123 38 L130 10 L117 33 Z" fill="#ffb6c1" /> <!-- Eyes (happy) -->
+                        <ellipse cx="70" cy="65" rx="8" ry="10" fill="#3d3d3d" />
+                        <ellipse cx="110" cy="65" rx="8" ry="10" fill="#3d3d3d" />
+                        <path d="M68 68 Q70 73 72 68" stroke="white" stroke-width="2" fill="none" />
+                        <path d="M108 68 Q110 73 112 68" stroke="white" stroke-width="2" fill="none" /> <!-- Nose -->
+                        <path d="M90 80 L87 86 L93 86 Z" fill="#ffb6c1" /> <!-- Big happy smile -->
+                        <path d="M90 86 Q75 100 70 95" stroke="#3d3d3d" stroke-width="2.5" fill="none"
+                            stroke-linecap="round" />
+                        <path d="M90 86 Q105 100 110 95" stroke="#3d3d3d" stroke-width="2.5" fill="none"
+                            stroke-linecap="round" /> <!-- Heart in paws -->
+                        <g transform="translate(90, 110)">
+                            <path
+                                d="M-3 -8 C-8 -12 -14 -8 -14 -2 C-14 4 0 15 0 15 C0 15 14 4 14 -2 C14 -8 8 -12 3 -8 C1 -6 0 -4 0 -4 C0 -4 -1 -6 -3 -8 Z"
+                                fill="#ff1744" />
+                            <path
+                                d="M-3 -8 C-8 -12 -14 -8 -14 -2 C-14 4 0 15 0 15 C0 15 14 4 14 -2 C14 -8 8 -12 3 -8 C1 -6 0 -4 0 -4 C0 -4 -1 -6 -3 -8 Z"
+                                fill="#ff1744" opacity="0.3" filter="url(#glow)" />
+                        </g>
+                        <defs>
+                            <filter id="glow">
+                                <fegaussianblur stddeviation="2" result="coloredBlur" />
+                            </filter>
+                        </defs> <!-- Blush -->
+                        <ellipse cx="55" cy="85" rx="9" ry="6" fill="#ffb6c1" opacity="0.7" />
+                        <ellipse cx="125" cy="85" rx="9" ry="6" fill="#ffb6c1" opacity="0.7" />
+                    </svg>
+                    <p id="letter-line-1" class="text-lg text-pink-700 leading-relaxed mb-6">Thank you for being my
+                        girlfriend and my Valentine. I love you. 💕</p>
+                    <p id="letter-line-2" class="text-lg text-pink-700 leading-relaxed mb-6">No matter if things get
+                        hard, I won't leave nor will I let you leave me. No matter what we'll always stay together. 💪
+                    </p>
+                    <p id="letter-line-3" class="text-lg text-pink-700 leading-relaxed mb-6">You're my property and I
+                        belongs to you. I love everything about you malkin . ?</p>
+                    <p class="text-2xl script-font text-pink-600 mt-8">Forever yours,</p>
+                    <p class="text-xl text-pink-500 mt-4">Your love 💖</p>
+                </div>
+            </div>
+        </div>
+        <div id="confetti-container"></div>
+    </div>
+    <script>
+        const defaultConfig = {
+            main_question: "Will you be my Valentine?",
+            yes_button_text: "Yes! 💕",
+            no_button_text: "No",
+            game_title: "Let's Play a Game!",
+            game_description: "If you win, I'll give you a present!",
+            letter_message: "Thank you for being my girlfriend and my Valentine. I love you."
+        };
+
+        let noClickCount = 0;
+        let isRunningAway = false;
+        let gameEmojis = ['🌹', '💕', '😻', '🎁', '✨', '💖', '🌟', '💝'];
+        let gameCards = [];
+        let flipped = [];
+        let matched = 0;
+        let gameActive = false;
+
+        function onConfigChange(config) {
+            const questionText = document.getElementById('question-text');
+            const yesText = document.getElementById('yes-text');
+            const gameTitle = document.getElementById('game-title');
+            const gameDesc = document.getElementById('game-desc');
+            const letterLine1 = document.getElementById('letter-line-1');
+            const letterLine2 = document.getElementById('letter-line-2');
+            const letterLine3 = document.getElementById('letter-line-3');
+
+            if (questionText) {
+                questionText.textContent = config.main_question || defaultConfig.main_question;
+            }
+
+            if (yesText) {
+                yesText.textContent = config.yes_button_text || defaultConfig.yes_button_text;
+            }
+
+            if (gameTitle) {
+                gameTitle.textContent = config.game_title || defaultConfig.game_title;
+            }
+
+            if (gameDesc) {
+                gameDesc.textContent = config.game_description || defaultConfig.game_description;
+            }
+
+            if (letterLine1 && config.letter_message) {
+                const lines = (config.letter_message || defaultConfig.letter_message).split('\n');
+                if (letterLine1) letterLine1.textContent = lines[0] || defaultConfig.letter_message;
+                if (letterLine2) letterLine2.textContent = lines[1] || "No matter if things get hard, I won't leave nor will I let you leave me. No matter what we'll always stay together. ?";
+                if (letterLine3) letterLine3.textContent = lines[2] || "You're my property and I love everything about you. Every single thing. ?";
+            }
+        }
+
+        function mapToCapabilities(config) {
+            return {
+                recolorables: [],
+                borderables: [],
+                fontEditable: undefined,
+                fontSizeable: undefined
+            };
+        }
+
+        function mapToEditPanelValues(config) {
+            return new Map([
+                ["main_question", config.main_question || defaultConfig.main_question],
+                ["yes_button_text", config.yes_button_text || defaultConfig.yes_button_text],
+                ["no_button_text", config.no_button_text || defaultConfig.no_button_text],
+                ["game_title", config.game_title || defaultConfig.game_title],
+                ["game_description", config.game_description || defaultConfig.game_description],
+                ["letter_message", config.letter_message || defaultConfig.letter_message]
+            ]);
+        }
+
+        if (window.elementSdk) {
+            window.elementSdk.init({
+                defaultConfig,
+                onConfigChange,
+                mapToCapabilities,
+                mapToEditPanelValues
+            });
+        }
+
+        // Show/Hide Pages
+        function showPage(pageNum) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById(`page-${pageNum}`).classList.add('active');
+        }
+
+        // PAGE 1: Valentine Question
+        const yesBtn = document.getElementById('yes-btn');
+        const noBtn = document.getElementById('no-btn');
+        const hintText = document.getElementById('hint-text');
+
+        yesBtn.addEventListener('click', () => {
+            yesBtn.classList.add('yes-btn-growing');
+            setTimeout(() => {
+                yesBtn.textContent = `Good girl! ?\n(That's what I thought!)`;
+                yesBtn.style.fontSize = '1.1rem';
+                yesBtn.style.lineHeight = '1.4';
+                yesBtn.style.whiteSpace = 'pre-wrap';
+            }, 100);
+            setTimeout(() => {
+                showPage(2);
+            }, 1500);
+        });
+
+        noBtn.addEventListener('click', () => {
+            noClickCount++;
+
+            if (noClickCount === 1) {
+                noBtn.textContent = "Are you sure? ?";
+                hintText.style.opacity = '1';
+            } else if (noClickCount === 2) {
+                noBtn.textContent = "Really?? 😿";
+            } else if (noClickCount >= 3) {
+                noBtn.textContent = "Can't catch me! ?";
+                isRunningAway = true;
+            }
+
+            if (isRunningAway) {
+                moveNoButton();
+            }
+        });
+
+        noBtn.addEventListener('mouseenter', () => {
+            if (isRunningAway) {
+                moveNoButton();
+            }
+        });
+
+        function moveNoButton() {
+            const page = document.getElementById('page-1');
+            const pageRect = page.getBoundingClientRect();
+            const btnRect = noBtn.getBoundingClientRect();
+
+            const maxX = pageRect.width - btnRect.width - 40;
+            const maxY = pageRect.height - btnRect.height - 40;
+
+            const randomX = Math.random() * maxX + 20;
+            const randomY = Math.random() * maxY + 20;
+
+            noBtn.style.position = 'absolute';
+            noBtn.style.left = randomX + 'px';
+            noBtn.style.top = randomY + 'px';
+        }
+
+        // PAGE 2: Game Invitation
+        const readyBtn = document.getElementById('ready-btn');
+        readyBtn.addEventListener('click', () => {
+            showPage(3);
+            startCountdown();
+        });
+
+        // PAGE 3: Countdown
+        function startCountdown() {
+            let count = 3;
+            const countdownDiv = document.getElementById('countdown');
+
+            const interval = setInterval(() => {
+                if (count < 0) {
+                    clearInterval(interval);
+                    showPage(4);
+                    initializeGame();
+                } else {
+                    countdownDiv.textContent = count;
+                    countdownDiv.classList.add('countdown-num');
+                    countdownDiv.addEventListener('animationend', () => {
+                        countdownDiv.classList.remove('countdown-num');
+                    }, { once: true });
+                    count--;
+                }
+            }, 800);
+        }
+
+        // PAGE 4: Memory Game
+        function initializeGame() {
+            gameActive = true;
+            matched = 0;
+            gameCards = [];
+            flipped = [];
+
+            const gameBoard = document.getElementById('game-board');
+            gameBoard.innerHTML = '';
+            document.getElementById('matched-count').textContent = '0';
+
+            const cards = [...gameEmojis, ...gameEmojis].sort(() => Math.random() - 0.5);
+
+            cards.forEach((emoji, index) => {
+                const card = document.createElement('div');
+                card.className = 'game-card w-16 h-16 bg-gradient-to-br from-pink-400 to-pink-600 rounded-lg flex items-center justify-center text-3xl shadow-lg border-2 border-pink-700';
+                card.dataset.emoji = emoji;
+                card.dataset.index = index;
+                card.textContent = '?';
+                card.style.cursor = 'pointer';
+
+                card.addEventListener('click', () => handleCardClick(card));
+                gameBoard.appendChild(card);
+            });
+        }
+
+        function handleCardClick(card) {
+            if (!gameActive || card.classList.contains('matched') || flipped.includes(card)) return;
+
+            card.textContent = card.dataset.emoji;
+            card.style.backgroundColor = '#ffc0cb';
+            flipped.push(card);
+
+            if (flipped.length === 2) {
+                gameActive = false;
+                setTimeout(checkMatch, 600);
+            }
+        }
+
+        function checkMatch() {
+            const [card1, card2] = flipped;
+            const isMatch = card1.dataset.emoji === card2.dataset.emoji;
+
+            if (isMatch) {
+                card1.classList.add('matched');
+                card2.classList.add('matched');
+                matched++;
+                document.getElementById('matched-count').textContent = matched;
+
+                if (matched === 8) {
+                    gameActive = false;
+                    setTimeout(() => {
+                        showPage(5);
+                        createConfetti();
+                    }, 500);
+                    return;
+                }
+            } else {
+                card1.textContent = '?';
+                card2.textContent = '?';
+                card1.style.backgroundColor = '';
+                card2.style.backgroundColor = '';
+            }
+
+            flipped = [];
+            gameActive = true;
+        }
+
+        // PAGE 5: Gift Opening
+        const giftBox = document.getElementById('gift-box');
+        let giftOpened = false;
+
+        giftBox.addEventListener('click', () => {
+            if (!giftOpened) {
+                giftOpened = true;
+                const boxTop = document.getElementById('box-top');
+                boxTop.classList.add('gift-open');
+                setTimeout(() => {
+                    showPage(6);
+                }, 600);
+            }
+        });
+
+        // Confetti effect
+        function createConfetti() {
+            const container = document.getElementById('confetti-container');
+            const colors = ['#ff6b9d', '#ff4081', '#ffeb3b', '#4CAF50', '#ff8fab', '#e91e63'];
+
+            for (let i = 0; i < 80; i++) {
+                setTimeout(() => {
+                    const confetti = document.createElement('div');
+                    confetti.className = 'confetti';
+                    confetti.style.left = Math.random() * 100 + '%';
+                    confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                    confetti.style.animationDelay = Math.random() * 2 + 's';
+                    confetti.style.borderRadius = Math.random() > 0.5 ? '50%' : '0';
+                    container.appendChild(confetti);
+
+                    setTimeout(() => confetti.remove(), 3000);
+                }, i * 25);
+            }
+        }
+    </script>
+    <script>(function () { function c() { var b = a.contentDocument || a.contentWindow.document; if (b) { var d = b.createElement('script'); d.innerHTML = "window.__CF$cv$params={r:'9cdefa25c61da6bd',t:'MTc3MTA5NzM5Ni4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);"; b.getElementsByTagName('head')[0].appendChild(d) } } if (document.body) { var a = document.createElement('iframe'); a.height = 1; a.width = 1; a.style.position = 'absolute'; a.style.top = 0; a.style.left = 0; a.style.border = 'none'; a.style.visibility = 'hidden'; document.body.appendChild(a); if ('loading' !== document.readyState) c(); else if (window.addEventListener) document.addEventListener('DOMContentLoaded', c); else { var e = document.onreadystatechange || function () { }; document.onreadystatechange = function (b) { e(b); 'loading' !== document.readyState && (document.onreadystatechange = e, c()) } } } })();</script>
+</body>
+
+</html>
